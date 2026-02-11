@@ -9,21 +9,21 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
 
     // Verify ownership
     // 1. Get User ID
-    const { data: user } = await supabase
+    const { data: user } = await (supabase
         .from('merchant_users')
         .select('id')
-        .eq('wallet_address', walletAddress)
-        .single();
+        .eq('wallet_address', walletAddress as any)
+        .single() as any);
 
     if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
     // 2. Get App
-    const { data: app, error } = await supabase
+    const { data: app, error } = await (supabase
         .from('merchant_apps')
         .select('*')
         .eq('id', id)
         .eq('user_id', user.id)
-        .single();
+        .single() as any);
 
     if (error || !app) {
         return NextResponse.json({ error: 'App not found' }, { status: 404 });
@@ -38,25 +38,26 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     const body = await req.json();
 
     // Verify ownership
-    const { data: user } = await supabase
+    const { data: user } = await (supabase
         .from('merchant_users')
         .select('id')
-        .eq('wallet_address', walletAddress)
-        .single();
+        .eq('wallet_address', walletAddress as any)
+        .single() as any);
 
     if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
     // Update
-    const { data: app, error } = await supabase
+    const { data: app, error: updateError } = await (supabase
         .from('merchant_apps')
-        .update(body) // Body can contain name, escrow_contract, etc.
+        .update(body as any) // Body can contain name, escrow_contract, etc.
         .eq('id', id)
         .eq('user_id', user.id)
         .select()
-        .single();
+        .single() as any);
 
-    if (error) {
-        return NextResponse.json({ error: error.message }, { status: 500 });
+    if (updateError) {
+        console.error(' [DB_UPDATE_ERROR]:', updateError);
+        return NextResponse.json({ error: updateError.message }, { status: 500 });
     }
 
     return NextResponse.json({ app });

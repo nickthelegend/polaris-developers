@@ -10,21 +10,24 @@ export async function POST(req: NextRequest) {
         }
 
         // Upsert user
-        const { data, error } = await supabase
+        const { data, error } = await (supabase
             .from('merchant_users')
             .upsert({
                 wallet_address,
                 email,
                 updated_at: new Date().toISOString()
-            }, { onConflict: 'wallet_address' })
+            } as any, { onConflict: 'wallet_address' })
             .select()
-            .single();
+            .single() as any);
 
         if (error) throw error;
 
         return NextResponse.json({ user: data });
     } catch (error: any) {
-        console.error('Sync Error:', error);
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        console.error(' [AUTH_SYNC_FATAL]:', error);
+        return NextResponse.json({
+            error: error.message,
+            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+        }, { status: 500 });
     }
 }

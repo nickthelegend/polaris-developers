@@ -57,7 +57,7 @@ export async function POST(req: NextRequest) {
         const client_id = `prod_${crypto.randomBytes(12).toString('hex')}`;
         const client_secret = `sk_${crypto.randomBytes(24).toString('hex')}`;
 
-        const { data: app, error } = await (supabase
+        const { data: app, error: insertError } = await (supabase
             .from('merchant_apps')
             .insert({
                 user_id: user.id,
@@ -71,7 +71,10 @@ export async function POST(req: NextRequest) {
             .select()
             .single() as any);
 
-        if (error) throw error;
+        if (insertError) {
+            console.error(' [DB_INSERT_ERROR]:', insertError);
+            throw new Error(`Database insert failed: ${insertError.message}`);
+        }
 
         return NextResponse.json({ app });
     } catch (error: any) {
