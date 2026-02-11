@@ -267,19 +267,24 @@ export default function AppDetails() {
                                 </div>
                             </div>
                             <pre className="p-6 text-xs text-teal-100/70 overflow-x-auto leading-relaxed">
-                                {`import { Polaris } from '@polaris/sdk';
-
-const polaris = new Polaris({
-  clientId: '${app.client_id}',
-  network: 'creditcoin_testnet'
+                                {`// 1. Create a Bill via API
+const res = await fetch('https://polaris.link/api/bills/create', {
+  method: 'POST',
+  headers: {
+    'x-client-id': '${app.client_id}',
+    'x-client-secret': '${app.client_secret}',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    amount: 125.50,
+    description: 'Order #1024'
+  })
 });
 
-// Create a checkout session
-const session = await polaris.sessions.create({
-  amount: 500.00,
-  currency: 'USDC',
-  orderId: 'ORDER-123'
-});`}
+const { checkoutUrl } = await res.json();
+
+// 2. Redirect user to authorization
+window.location.href = checkoutUrl;`}
                             </pre>
                         </div>
                     </section>
