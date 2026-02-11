@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabaseClient';
+import crypto from 'crypto';
 
 export async function GET(req: NextRequest) {
     const walletAddress = req.headers.get('x-wallet-address');
@@ -9,11 +10,11 @@ export async function GET(req: NextRequest) {
     }
 
     // 1. Get User ID
-    const { data: user } = await supabase
+    const { data: user } = await (supabase
         .from('merchant_users')
         .select('id')
         .eq('wallet_address', walletAddress)
-        .single();
+        .single() as any);
 
     if (!user) {
         return NextResponse.json({ apps: [] }); // User not found, so no apps
@@ -42,31 +43,33 @@ export async function POST(req: NextRequest) {
         }
 
         // 1. Get User ID (or fail)
-        const { data: user } = await supabase
+        const { data: user } = await (supabase
             .from('merchant_users')
             .select('id')
             .eq('wallet_address', wallet_address)
-            .single();
+            .single() as any);
 
         if (!user) {
             return NextResponse.json({ error: 'User not registered. Please refresh.' }, { status: 404 });
         }
 
-        // 2. Create App (Trigger will handle client_id/secret generation usually, but we have default in schema)
-        // Actually schema has defaults: default(dbgenerated("gen_random_uuid()")) etc.
-        // But Prisma upsert might need us to omit them or let DB handle.
-        // Since we use supabase-js, passing minimal data works.
+        // 2. Create App with explicitly generated credentials
+        const client_id = `prod_${crypto.randomBytes(12).toString('hex')}`;
+        const client_secret = `sk_${crypto.randomBytes(24).toString('hex')}`;
 
-        const { data: app, error } = await supabase
+        const { data: app, error } = await (supabase
             .from('merchant_apps')
             .insert({
                 user_id: user.id,
                 name,
                 category,
-                network: 'creditcoin_testnet'
-            })
+                client_id,
+                client_secret,
+                network: 'creditcoin_testnet',
+                status: 'pending'
+            } as any)
             .select()
-            .single();
+            .single() as any);
 
         if (error) throw error;
 

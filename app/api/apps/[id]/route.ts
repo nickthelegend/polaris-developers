@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabaseClient';
 
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
-    const { id } = params;
+export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+    const { id } = await params;
     const walletAddress = req.headers.get('x-wallet-address');
 
     if (!id) return NextResponse.json({ error: 'Missing ID' }, { status: 400 });
@@ -32,8 +32,8 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
     return NextResponse.json({ app });
 }
 
-export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
-    const { id } = params;
+export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+    const { id } = await params;
     const walletAddress = req.headers.get('x-wallet-address');
     const body = await req.json();
 

@@ -29,7 +29,7 @@ const DEFAULT_STABLECOIN = "0x58e67dEEEcde20f10eD90B5191f08f39e81B6658";
 export default function AppDetails() {
     const { id } = useParams();
     const router = useRouter();
-    const { user, authenticated } = usePrivy();
+    const { user, authenticated, login } = usePrivy();
     const { wallets } = useWallets();
     const wallet = wallets[0];
 
@@ -135,7 +135,8 @@ export default function AppDetails() {
         setError('');
 
         try {
-            const provider = await wallet.getEthersProvider();
+            const externalProvider = await wallet.getEthereumProvider();
+            const provider = new ethers.BrowserProvider(externalProvider);
             const signer = await provider.getSigner();
 
             setStatusText('Deploying Escrow Contract...');
@@ -180,9 +181,32 @@ export default function AppDetails() {
         setTimeout(() => setStatusText(''), 2000);
     };
 
-    if (!authenticated) return null;
-    if (fetchError) return <div className="p-8 text-red-500">Error loading app.</div>;
-    if (!app) return <div className="p-8 text-white/50 animate-pulse">Loading Application Config...</div>;
+    if (!authenticated) {
+        return (
+            <div className="min-h-screen bg-black text-white flex items-center justify-center font-mono">
+                <div className="text-center">
+                    <Zap className="w-12 h-12 text-teal-500 mx-auto mb-6 animate-pulse" />
+                    <h2 className="text-xl font-bold mb-4 uppercase tracking-tighter">Session Required</h2>
+                    <button
+                        onClick={login}
+                        className="bg-white text-black px-8 py-3 rounded font-bold uppercase text-sm tracking-widest hover:bg-teal-500 transition-all"
+                    >
+                        Connect Wallet
+                    </button>
+                </div>
+            </div>
+        );
+    }
+
+    if (fetchError) return <div className="p-8 text-red-500 font-mono">Error loading app. Please check your connection.</div>;
+    if (!app) return (
+        <div className="min-h-screen bg-black text-white flex items-center justify-center font-mono">
+            <div className="flex items-center gap-3 text-white/40">
+                <Loader2 className="w-5 h-5 animate-spin" />
+                <span className="text-sm uppercase tracking-widest font-bold">Initialising Configuration...</span>
+            </div>
+        </div>
+    );
 
     return (
         <div className="min-h-screen bg-black text-white font-mono p-8 selection:bg-teal-900 selection:text-white">
@@ -203,6 +227,10 @@ export default function AppDetails() {
                         <div className="flex items-center gap-3 mb-2">
                             <Zap className="w-7 h-7 text-teal-400" />
                             <h1 className="text-3xl font-bold tracking-tighter">{app.name}</h1>
+                            <div className="ml-4 px-2 py-0.5 rounded border border-white/10 bg-white/5 text-[9px] text-white/40 font-bold uppercase tracking-widest flex items-center gap-2">
+                                <div className="w-1.5 h-1.5 rounded-full bg-teal-500 shadow-[0_0_8px_rgba(20,184,166,0.5)]" />
+                                Linked: {user?.wallet?.address.slice(0, 6)}...{user?.wallet?.address.slice(-4)}
+                            </div>
                         </div>
                         <p className="text-white/40 text-xs uppercase tracking-widest">{app.category || 'General Application'}</p>
                     </div>
