@@ -39,7 +39,10 @@ export default function Dashboard() {
 
     const handleCreateApp = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!newAppName) return;
+        if (!newAppName) {
+            alert('Please enter an application name.');
+            return;
+        }
         setIsCreating(true);
 
         try {
@@ -113,7 +116,7 @@ export default function Dashboard() {
                         />
                         <button
                             type="submit"
-                            disabled={isCreating || !newAppName}
+                            disabled={isCreating}
                             className="bg-primary text-black px-6 py-2 rounded-lg font-black text-sm hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 transition-all uppercase tracking-tighter shadow-lg shadow-primary/20"
                         >
                             {isCreating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
@@ -144,7 +147,7 @@ export default function Dashboard() {
                             <div
                                 key={app.id}
                                 onClick={() => router.push(`/dashboard/${app.id}`)}
-                                className="group bg-white/[0.03] border border-white/10 hover:border-teal-500/50 hover:bg-white/[0.06] rounded-2xl p-6 transition-all cursor-pointer relative overflow-hidden"
+                                className="group bg-white/[0.03] border border-white/10 hover:border-primary/50 hover:bg-white/[0.06] rounded-2xl p-6 transition-all cursor-pointer relative overflow-hidden"
                             >
                                 <div className="absolute top-0 right-0 p-4 opacity-50 group-hover:opacity-100 transition-opacity">
                                     <ArrowRight className="w-5 h-5 -rotate-45 text-white/40 group-hover:text-primary transition-colors" />

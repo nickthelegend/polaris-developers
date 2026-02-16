@@ -85,13 +85,13 @@ export default function WebhookManager({ appId }: Props) {
         <section className="bg-white/[0.03] border border-white/10 rounded-2xl p-6">
             <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-2">
-                    <Globe className="w-5 h-5 text-teal-400" />
+                    <Globe className="w-5 h-5 text-primary" />
                     <h2 className="text-lg font-bold">Webhooks</h2>
                 </div>
                 {!isAdding && (
                     <button
                         onClick={() => setIsAdding(true)}
-                        className="text-[10px] font-bold uppercase tracking-widest text-teal-400 hover:text-white flex items-center gap-1 transition-colors"
+                        className="text-[10px] font-bold uppercase tracking-widest text-primary hover:text-white flex items-center gap-1 transition-all"
                     >
                         <Plus className="w-3 h-3" /> Add Endpoint
                     </button>
@@ -99,7 +99,7 @@ export default function WebhookManager({ appId }: Props) {
             </div>
 
             {isAdding && (
-                <div className="bg-black/40 border border-teal-500/20 rounded-xl p-4 mb-6 space-y-4 animate-in fade-in slide-in-from-top-4">
+                <div className="bg-black/40 border border-primary/20 rounded-xl p-4 mb-6 space-y-4 animate-in fade-in slide-in-from-top-4">
                     <div className="flex items-center justify-between">
                         <span className="text-[10px] uppercase font-bold text-white/40 tracking-widest">New Webhook Endpoint</span>
                         <button onClick={() => setIsAdding(false)}><X className="w-4 h-4 text-white/20 hover:text-white" /></button>
@@ -109,14 +109,14 @@ export default function WebhookManager({ appId }: Props) {
                             value={newUrl}
                             onChange={(e) => setNewUrl(e.target.value)}
                             placeholder="https://your-api.com/webhooks/polaris"
-                            className="w-full bg-white/5 border border-white/10 rounded px-3 py-2 text-xs font-mono focus:outline-none focus:border-teal-500 transition-colors"
+                            className="w-full bg-white/5 border border-white/10 rounded px-3 py-2 text-xs font-mono focus:outline-none focus:border-primary transition-colors"
                         />
                     </div>
                     <div className="flex justify-end gap-2">
                         <button
                             disabled={loading}
                             onClick={handleAdd}
-                            className="bg-white text-black px-4 py-1.5 rounded font-bold text-[10px] uppercase tracking-widest hover:bg-teal-400 transition-all flex items-center gap-2"
+                            className="bg-primary text-black px-4 py-1.5 rounded-lg font-black text-[10px] uppercase tracking-tighter hover:scale-105 transition-all flex items-center gap-2"
                         >
                             {loading ? <Loader2 className="w-3 h-3 animate-spin" /> : 'Create Endpoint'}
                         </button>
@@ -143,10 +143,10 @@ export default function WebhookManager({ appId }: Props) {
                                     <button
                                         onClick={() => handleTest(wh.id)}
                                         disabled={!!testing}
-                                        className="text-white/20 hover:text-teal-400 transition-colors"
+                                        className="text-white/20 hover:text-primary transition-colors"
                                         title="Send Test Event"
                                     >
-                                        {testing === wh.id ? <Loader2 className="w-3.5 h-3.5 animate-spin text-teal-400" /> : <Play className="w-3.5 h-3.5" />}
+                                        {testing === wh.id ? <Loader2 className="w-3.5 h-3.5 animate-spin text-primary" /> : <Play className="w-3.5 h-3.5" />}
                                     </button>
                                     <button
                                         onClick={() => setShowSecret(showSecret === wh.id ? null : wh.id)}
@@ -161,11 +161,11 @@ export default function WebhookManager({ appId }: Props) {
                             </div>
 
                             {showSecret === wh.id && (
-                                <div className="bg-teal-500/5 border border-teal-500/10 rounded p-2 flex items-center justify-between">
-                                    <code className="text-[10px] text-teal-400 font-mono select-all">
+                                <div className="bg-primary/5 border border-primary/10 rounded p-2 flex items-center justify-between">
+                                    <code className="text-[10px] text-primary font-mono select-all">
                                         {wh.secret}
                                     </code>
-                                    <span className="text-[8px] uppercase font-bold text-teal-400/50">HMAC Secret</span>
+                                    <span className="text-[8px] uppercase font-bold text-primary/50">HMAC Secret</span>
                                 </div>
                             )}
 
