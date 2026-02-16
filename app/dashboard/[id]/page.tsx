@@ -56,7 +56,8 @@ export default function AppDetails() {
     const fetchBalance = async () => {
         if (!app?.escrow_contract || !wallet) return;
         try {
-            const provider = await wallet.getEthersProvider();
+            const externalProvider = await wallet.getEthereumProvider();
+            const provider = new ethers.BrowserProvider(externalProvider);
             const abi = ["function balanceOf(address) view returns (uint256)"];
             const usdc = new ethers.Contract(DEFAULT_STABLECOIN, abi, provider);
             const bal = await usdc.balanceOf(app.escrow_contract);
@@ -70,7 +71,8 @@ export default function AppDetails() {
         if (!app?.escrow_contract || !wallet) return;
         setRefreshingLogs(true);
         try {
-            const provider = await wallet.getEthersProvider();
+            const externalProvider = await wallet.getEthereumProvider();
+            const provider = new ethers.BrowserProvider(externalProvider);
             const contract = new ethers.Contract(app.escrow_contract, PolarisMerchantEscrow.abi, provider);
 
             const filter = contract.filters.PaymentSettled();
@@ -109,7 +111,8 @@ export default function AppDetails() {
         setWithdrawing(true);
         setError('');
         try {
-            const provider = await wallet.getEthersProvider();
+            const externalProvider = await wallet.getEthereumProvider();
+            const provider = new ethers.BrowserProvider(externalProvider);
             const signer = await provider.getSigner();
             const contract = new ethers.Contract(app.escrow_contract, PolarisMerchantEscrow.abi, signer);
 
@@ -183,15 +186,15 @@ export default function AppDetails() {
 
     if (!authenticated) {
         return (
-            <div className="min-h-screen bg-black text-white flex items-center justify-center font-mono">
-                <div className="text-center">
-                    <Zap className="w-12 h-12 text-teal-500 mx-auto mb-6 animate-pulse" />
+            <div className="min-h-screen bg-background text-foreground flex items-center justify-center font-display grid-bg">
+                <div className="text-center relative z-10">
+                    <Zap className="w-12 h-12 text-primary mx-auto mb-6 animate-pulse neon-glow" />
                     <h2 className="text-xl font-bold mb-4 uppercase tracking-tighter">Session Required</h2>
                     <button
                         onClick={login}
-                        className="bg-white text-black px-8 py-3 rounded font-bold uppercase text-sm tracking-widest hover:bg-teal-500 transition-all"
+                        className="bg-primary text-black px-10 py-4 rounded-xl font-black uppercase text-sm tracking-widest hover:scale-105 transition-all shadow-[0_8px_30px_rgba(166,242,74,0.3)]"
                     >
-                        Connect Wallet
+                        Connect Terminal
                     </button>
                 </div>
             </div>
@@ -209,30 +212,33 @@ export default function AppDetails() {
     );
 
     return (
-        <div className="min-h-screen bg-black text-white font-mono p-8 selection:bg-teal-900 selection:text-white">
-            <header className="max-w-4xl mx-auto mb-12">
+        <div className="min-h-screen bg-background text-foreground font-display p-8 selection:bg-primary/20 selection:text-white grid-bg">
+            <div className="max-w-4xl mx-auto mb-8 flex items-center justify-between">
                 <button
                     onClick={() => router.push('/dashboard')}
-                    className="flex items-center gap-2 text-white/40 hover:text-white mb-6 text-sm group"
+                    className="flex items-center gap-2 text-white/40 hover:text-white text-sm group transition-colors"
                 >
-                    <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" /> Back to Dashboard
+                    <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" /> Dashboard
                 </button>
                 {statusText && (
-                    <div className="fixed top-8 left-1/2 -translate-x-1/2 z-50 bg-teal-500 text-black px-4 py-2 rounded-full font-bold text-xs shadow-2xl animate-in fade-in slide-in-from-top-4">
+                    <div className="bg-primary text-black px-4 py-1.5 rounded-full font-black text-[10px] uppercase tracking-wider animate-in fade-in slide-in-from-top-2 shadow-[0_0_15px_rgba(166,242,74,0.4)]">
                         {statusText}
                     </div>
                 )}
+            </div>
+
+            <header className="max-w-4xl mx-auto mb-12">
                 <div className="flex items-end justify-between">
                     <div>
                         <div className="flex items-center gap-3 mb-2">
-                            <Zap className="w-7 h-7 text-teal-400" />
-                            <h1 className="text-3xl font-bold tracking-tighter">{app.name}</h1>
+                            <Zap className="w-7 h-7 text-primary neon-glow" />
+                            <h1 className="text-3xl font-black uppercase italic tracking-tighter">{app.name}</h1>
                             <div className="ml-4 px-2 py-0.5 rounded border border-white/10 bg-white/5 text-[9px] text-white/40 font-bold uppercase tracking-widest flex items-center gap-2">
-                                <div className="w-1.5 h-1.5 rounded-full bg-teal-500 shadow-[0_0_8px_rgba(20,184,166,0.5)]" />
+                                <div className="w-1.5 h-1.5 rounded-full bg-primary shadow-[0_0_8px_rgba(166,242,74,0.5)]" />
                                 Linked: {user?.wallet?.address.slice(0, 6)}...{user?.wallet?.address.slice(-4)}
                             </div>
                         </div>
-                        <p className="text-white/40 text-xs uppercase tracking-widest">{app.category || 'General Application'}</p>
+                        <p className="text-white/40 text-xs uppercase tracking-widest font-medium">{app.category || 'General Application'}</p>
                     </div>
                     <div className="text-right">
                         <span className={`text-[10px] uppercase font-bold px-3 py-1 rounded-full border ${app.escrow_contract ? 'border-green-500/30 text-green-400 bg-green-500/10' : 'border-yellow-500/30 text-yellow-500 bg-yellow-500/10'}`}>
@@ -247,7 +253,7 @@ export default function AppDetails() {
                 <div className="md:col-span-2 space-y-8">
                     <section className="bg-white/[0.03] border border-white/10 rounded-2xl p-6">
                         <div className="flex items-center gap-2 mb-6">
-                            <ShieldCheck className="w-5 h-5 text-teal-400" />
+                            <ShieldCheck className="w-5 h-5 text-primary" />
                             <h2 className="text-lg font-bold">API Configuration</h2>
                         </div>
 
@@ -281,7 +287,7 @@ export default function AppDetails() {
 
                     <section className="bg-white/[0.03] border border-white/10 rounded-2xl p-6">
                         <div className="flex items-center gap-2 mb-6">
-                            <Code2 className="w-5 h-5 text-teal-400" />
+                            <Code2 className="w-5 h-5 text-primary" />
                             <h2 className="text-lg font-bold">Quick Integration</h2>
                         </div>
 
@@ -320,7 +326,7 @@ window.location.href = checkoutUrl;`}
                     <section className="bg-white/[0.03] border border-white/10 rounded-2xl p-6">
                         <div className="flex items-center justify-between mb-6">
                             <div className="flex items-center gap-2">
-                                <Terminal className="w-5 h-5 text-teal-400" />
+                                <Terminal className="w-5 h-5 text-primary" />
                                 <h2 className="text-lg font-bold">Transaction Stream</h2>
                             </div>
                             {app.escrow_contract && (
@@ -371,10 +377,10 @@ window.location.href = checkoutUrl;`}
                 {/* Right Column: Escrow Deployment */}
                 <div className="space-y-8">
                     <section className="bg-white/[0.03] border border-white/10 rounded-2xl p-6 relative overflow-hidden">
-                        <div className="absolute top-0 right-0 w-24 h-24 bg-teal-500/10 blur-3xl -mr-12 -mt-12" />
+                        <div className="absolute top-0 right-0 w-24 h-24 bg-primary/10 blur-3xl -mr-12 -mt-12" />
 
                         <div className="flex items-center gap-2 mb-4">
-                            <Cpu className="w-5 h-5 text-teal-400" />
+                            <Cpu className="w-5 h-5 text-primary" />
                             <h2 className="text-lg font-bold">On-chain Escrow</h2>
                         </div>
 
@@ -388,20 +394,20 @@ window.location.href = checkoutUrl;`}
                                     <label className="text-[9px] uppercase text-white/30 block mb-1">Contract Address</label>
                                     <div className="flex items-center justify-between gap-1">
                                         <code className="text-[10px] text-white/60 truncate">{app.escrow_contract}</code>
-                                        <a href={`https://explorer.usc-testnet2.creditcoin.network/address/${app.escrow_contract}`} target="_blank" className="text-teal-400 hover:text-white">
+                                        <a href={`https://explorer.usc-testnet2.creditcoin.network/address/${app.escrow_contract}`} target="_blank" className="text-primary hover:text-white">
                                             <ExternalLink className="w-3 h-3" />
                                         </a>
                                     </div>
                                 </div>
-                                <div className="bg-teal-500/5 border border-teal-500/10 rounded-xl p-4 flex items-center justify-between">
+                                <div className="bg-primary/5 border border-primary/10 rounded-xl p-4 flex items-center justify-between">
                                     <div>
-                                        <div className="text-[9px] uppercase font-bold text-teal-400/50 mb-1">Escrow Balance</div>
+                                        <div className="text-[9px] uppercase font-bold text-primary/50 mb-1">Escrow Balance</div>
                                         <div className="text-xl font-bold text-white">{balance} USDC</div>
                                     </div>
                                     <button
                                         disabled={withdrawing || parseFloat(balance) === 0}
                                         onClick={handleWithdraw}
-                                        className="bg-white text-black px-4 py-2 rounded-lg font-bold text-[10px] uppercase tracking-widest hover:bg-teal-400 disabled:opacity-30 transition-all flex items-center gap-2"
+                                        className="bg-primary text-black px-4 py-2 rounded-lg font-black text-[10px] uppercase tracking-tighter hover:scale-105 disabled:opacity-30 transition-all flex items-center gap-2 shadow-md shadow-primary/10"
                                     >
                                         {withdrawing ? <Loader2 className="w-3 h-3 animate-spin" /> : 'Withdraw'}
                                     </button>
@@ -427,7 +433,7 @@ window.location.href = checkoutUrl;`}
                                 <button
                                     onClick={handleDeployEscrow}
                                     disabled={deploying}
-                                    className="w-full bg-teal-500 hover:bg-teal-400 disabled:bg-white/10 disabled:text-white/20 text-black font-bold py-3 rounded-xl transition-all flex items-center justify-center gap-3 active:scale-[0.98]"
+                                    className="w-full bg-primary hover:scale-[1.02] disabled:bg-white/10 disabled:text-white/20 text-black font-black uppercase tracking-tighter py-3 rounded-xl transition-all flex items-center justify-center gap-3 active:scale-[0.98] shadow-lg shadow-primary/20"
                                 >
                                     {deploying ? (
                                         <>

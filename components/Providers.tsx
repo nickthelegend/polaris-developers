@@ -19,7 +19,7 @@ export default function Providers({ children }: { children: ReactNode }) {
                 loginMethods: ['email', 'wallet'],
                 appearance: {
                     theme: 'dark',
-                    accentColor: '#14b8a6', // teal-500
+                    accentColor: '#A6F24A', // neon-lime
                     showWalletLoginFirst: true,
                 },
                 embeddedWallets: {

@@ -1,10 +1,10 @@
 import './globals.css';
-import { Inter, Space_Mono } from 'next/font/google';
+import { Space_Grotesk, JetBrains_Mono } from 'next/font/google';
 import Providers from '@/components/Providers';
+import Header from '@/components/Header';
 
-const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
-const spaceMono = Space_Mono({
-  weight: ['400', '700'],
+const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], variable: '--font-sans' });
+const jetBrainsMono = JetBrains_Mono({
   subsets: ['latin'],
   variable: '--font-mono',
 });
@@ -21,9 +21,13 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} ${spaceMono.variable} bg-black text-white antialiased`}>
+      <body className={`${spaceGrotesk.variable} ${jetBrainsMono.variable} bg-background text-foreground antialiased`}>
+        <div className="scanline" />
         <Providers>
-          {children}
+          <Header />
+          <main className="pt-20">
+            {children}
+          </main>
         </Providers>
       </body>
     </html>
