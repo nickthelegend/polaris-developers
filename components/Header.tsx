@@ -1,6 +1,7 @@
 'use client';
 
 import { usePrivy } from '@privy-io/react-auth';
+import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Wallet, LogOut, LayoutDashboard, LayoutGrid, Zap } from 'lucide-react';
@@ -16,17 +17,13 @@ export default function Header() {
             <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
                 <div className="flex items-center gap-10">
                     <Link href="/" className="flex items-center gap-3 group">
-                        <div className="w-12 h-12 bg-primary rounded-xl flex items-center justify-center group-hover:rotate-12 transition-transform shadow-[0_0_30px_rgba(166,242,74,0.4)]">
-                            <Zap className="w-7 h-7 text-black fill-current" />
-                        </div>
-                        <div className="flex flex-col">
-                            <span className="text-3xl font-black tracking-tighter uppercase italic neon-text leading-none">
-                                POLARIS
-                            </span>
-                            <span className="text-[10px] font-bold tracking-[0.45em] text-white/40 uppercase pl-1 leading-none mt-1">
-                                PROTOCOL
-                            </span>
-                        </div>
+                        <Image
+                            src="/logo.png"
+                            alt="Polaris Logo"
+                            width={140}
+                            height={40}
+                            className="h-9 w-auto hover:brightness-110 transition-all"
+                        />
                     </Link>
 
                     <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-white/50">

@@ -149,7 +149,7 @@ export const PayWithPolaris: React.FC<PayWithPolarisProps> = ({
                 onClick={handlePayment}
                 disabled={loading}
                 className={`
-                    flex items-center gap-2 bg-teal-500 hover:bg-teal-400 text-black font-bold py-3 px-6 rounded-xl transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-teal-500/20
+                    flex items-center gap-2 bg-primary text-black font-black uppercase tracking-tighter py-4 px-8 rounded-xl transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_8px_30px_rgba(166,242,74,0.3)]
                     ${loading ? 'cursor-wait' : ''}
                 `}
             >
@@ -157,8 +157,8 @@ export const PayWithPolaris: React.FC<PayWithPolarisProps> = ({
                 {loading ? status : `Pay ${amount} USDC with Polaris`}
             </button>
 
-            <div className="text-[10px] text-gray-500 uppercase tracking-widest font-bold flex items-center gap-1">
-                <ShieldCheck className="w-3 h-3" />
+            <div className="text-[10px] text-white/30 uppercase tracking-[0.3em] font-bold flex items-center gap-2">
+                <ShieldCheck className="w-3 h-3 text-primary" />
                 Secured by Polaris Protocol
             </div>
         </div>

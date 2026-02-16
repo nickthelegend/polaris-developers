@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { ArrowRight, Code2, ShieldCheck, Zap, ShoppingBag } from 'lucide-react';
 
 export default function Home() {
@@ -18,12 +19,16 @@ export default function Home() {
                         Polaris Protocol v1.0
                     </div>
 
-                    <h1 className="text-6xl md:text-[9rem] font-black tracking-tighter mb-6 animate-in fade-in slide-in-from-bottom-6 duration-1000 uppercase italic">
-                        POLARIS <br />
-                        <span className="neon-text">
-                            PROTOCOL
-                        </span>
-                    </h1>
+                    <div className="flex justify-center mb-10 animate-in fade-in slide-in-from-bottom-6 duration-1000">
+                        <Image
+                            src="/logo.png"
+                            alt="Polaris Logo"
+                            width={600}
+                            height={150}
+                            className="w-full max-w-[500px] h-auto"
+                            priority
+                        />
+                    </div>
 
                     <p className="text-lg text-white/50 max-w-2xl mx-auto mb-10 leading-relaxed animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-100 font-medium">
                         The complete payment stack for web3 developers. Integrate decentralized payments,
