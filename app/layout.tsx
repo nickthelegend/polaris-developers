@@ -1,27 +1,36 @@
-import type { Metadata } from 'next';
-import { Inter, Space_Mono } from 'next/font/google';
-import './globals.css';
-import { Providers } from '../components/Providers';
 
-const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
-const mono = Space_Mono({ subsets: ['latin'], weight: ['400', '700'], variable: '--font-mono' });
+import type { Metadata } from "next";
+import localFont from "next/font/local";
+import "./globals.css";
+import { Providers } from "@/components/providers";
+
+const geistSans = localFont({
+  src: "./fonts/GeistVF.woff",
+  variable: "--font-geist-sans",
+  weight: "100 900",
+});
+const geistMono = localFont({
+  src: "./fonts/GeistMonoVF.woff",
+  variable: "--font-geist-mono",
+  weight: "100 900",
+});
 
 export const metadata: Metadata = {
-  title: 'Polaris Payments | Developer Console',
-  description: 'Deploy merchant escrow contracts and integrate Polaris BNPL.',
+  title: "Polaris Developer Portal",
+  description: "Manage your Polaris payments and bills",
 };
 
 export default function RootLayout({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode;
-}) {
+}>) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} ${mono.variable} min-h-screen font-sans selection:bg-teal-500/30 selection:text-teal-200`}>
-        <Providers>
-          {children}
-        </Providers>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-zinc-950 text-white`}
+      >
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

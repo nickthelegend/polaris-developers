@@ -1,3 +1,4 @@
+
 "use client"
 
 import type React from "react"
@@ -6,12 +7,11 @@ import { PrivyProvider } from "@privy-io/react-auth"
 export function Providers({ children }: { children: React.ReactNode }) {
     return (
         <PrivyProvider
-            appId={process.env.NEXT_PUBLIC_PRIVY_APP_ID || ""}
+            appId={process.env.NEXT_PUBLIC_PRIVY_APP_ID || "cmkr3rc4i00iujs0cgnug0qzj"}
             config={{
                 appearance: {
                     theme: "dark",
-                    accentColor: "#14B8A6", // Teal-500
-                    logo: "https://polaris-protocol.vercel.app/logo.png", // specific logo for Polaris
+                    accentColor: "#676FFF",
                 },
                 embeddedWallets: {
                     createOnLogin: "users-without-wallets",
@@ -20,43 +20,20 @@ export function Providers({ children }: { children: React.ReactNode }) {
                     id: 102036,
                     name: "Creditcoin USC Testnet 2",
                     network: "usc-testnet-2",
-                    nativeCurrency: { name: "tCTC", symbol: "tCTC", decimals: 18 },
+                    nativeCurrency: {
+                        name: "tCTC",
+                        symbol: "tCTC",
+                        decimals: 18,
+                    },
                     rpcUrls: {
-                        default: { http: ["https://rpc.usc-testnet2.creditcoin.network"] },
-                        public: { http: ["https://rpc.usc-testnet2.creditcoin.network"] },
-                    },
-                    blockExplorers: {
-                        default: { name: "Explorer", url: "https://explorer.usc-testnet2.creditcoin.network" },
-                    },
-                },
-                supportedChains: [
-                    {
-                        id: 102036,
-                        name: "Creditcoin USC Testnet 2",
-                        network: "usc-testnet-2",
-                        nativeCurrency: { name: "tCTC", symbol: "tCTC", decimals: 18 },
-                        rpcUrls: {
-                            default: { http: ["https://rpc.usc-testnet2.creditcoin.network"] },
-                            public: { http: ["https://rpc.usc-testnet2.creditcoin.network"] },
+                        default: {
+                            http: ["https://rpc.usc-testnet2.creditcoin.network"],
                         },
-                        blockExplorers: {
-                            default: { name: "Explorer", url: "https://explorer.usc-testnet2.creditcoin.network" },
+                        public: {
+                            http: ["https://rpc.usc-testnet2.creditcoin.network"],
                         },
                     },
-                    {
-                        id: 11155111,
-                        name: "Sepolia",
-                        network: "sepolia",
-                        nativeCurrency: { name: "ETH", symbol: "ETH", decimals: 18 },
-                        rpcUrls: {
-                            default: { http: ["https://1rpc.io/sepolia"] }, // Generic RPC fallback
-                            public: { http: ["https://1rpc.io/sepolia"] },
-                        },
-                        blockExplorers: {
-                            default: { name: "Etherscan", url: "https://sepolia.etherscan.io" },
-                        },
-                    },
-                ]
+                }
             }}
         >
             {children}
