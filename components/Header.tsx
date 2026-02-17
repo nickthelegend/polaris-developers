@@ -10,6 +10,33 @@ export default function Header() {
     const { login, logout, authenticated, user } = usePrivy();
     const pathname = usePathname();
 
+    const switchToCreditcoin = async () => {
+        if (!(window as any).ethereum) return;
+        try {
+            await (window as any).ethereum.request({
+                method: 'wallet_switchEthereumChain',
+                params: [{ chainId: '0x18e8c' }], // 102036
+            });
+        } catch (switchError: any) {
+            if (switchError.code === 4902) {
+                try {
+                    await (window as any).ethereum.request({
+                        method: 'wallet_addEthereumChain',
+                        params: [{
+                            chainId: '0x18e8c',
+                            chainName: 'Creditcoin Testnet',
+                            nativeCurrency: { name: 'Creditcoin', symbol: 'tCTC', decimals: 18 },
+                            rpcUrls: ['https://rpc.cc3-testnet.creditcoin.network'],
+                            blockExplorerUrls: ['https://explorer.usc-testnet2.creditcoin.network'],
+                        }],
+                    });
+                } catch (addError) {
+                    console.error(addError);
+                }
+            }
+        }
+    };
+
     if (pathname === '/shop') return null;
 
     return (
@@ -41,6 +68,13 @@ export default function Header() {
                 <div className="flex items-center gap-4">
                     {authenticated ? (
                         <div className="flex items-center gap-4">
+                            <button
+                                onClick={switchToCreditcoin}
+                                className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-lg border border-primary/20 bg-primary/5 text-primary text-[10px] font-bold uppercase tracking-wider hover:bg-primary/10 transition-all"
+                            >
+                                <Zap className="w-3 h-3 fill-current" />
+                                Switch to Creditcoin
+                            </button>
                             <div className="hidden lg:flex flex-col items-end">
                                 <span className="text-[10px] text-white/30 font-mono uppercase tracking-widest">
                                     {user?.wallet?.address?.slice(0, 6)}...{user?.wallet?.address?.slice(-4)}
@@ -60,7 +94,7 @@ export default function Header() {
                             className="flex items-center gap-2 bg-primary text-black font-bold px-6 py-2.5 rounded-xl hover:scale-105 transition-all active:scale-95 shadow-[0_4px_20px_rgba(166,242,74,0.2)]"
                         >
                             <Wallet className="w-4 h-4" />
-                            Connect
+                            Connect Terminal
                         </button>
                     )
                     }

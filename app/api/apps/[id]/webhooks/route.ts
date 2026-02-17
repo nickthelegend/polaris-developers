@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabaseClient';
 
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
-    const { id } = params;
+export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+    const { id } = await params;
     const { data: webhooks, error } = await supabase
         .from('webhooks')
         .select('*')
@@ -12,8 +12,8 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
     return NextResponse.json({ webhooks });
 }
 
-export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
-    const { id } = params;
+export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+    const { id } = await params;
     const body = await req.json();
     const { url, events } = body;
 
